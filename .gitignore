@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 Skip to content
 This repository
@@ -29,6 +30,8 @@ TimeTable/.gitignore
 56 lines (41 sloc) 760 Bytes
 =======
 >>>>>>> 18df1c3677aa756440a8bfb71c8b5ff13ffbacbf
+=======
+>>>>>>> 346e2c77c85570e857f32c7e662caaf1b2b3ebb5
 # Built application files
 *.apk
 *.ap_
@@ -85,6 +88,7 @@ freeline.py
 freeline/
 freeline_project_description.json
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     © 2018 GitHub, Inc.
     Terms
@@ -101,3 +105,5 @@ freeline_project_description.json
     About
 =======
 >>>>>>> 18df1c3677aa756440a8bfb71c8b5ff13ffbacbf
+=======
+>>>>>>> 346e2c77c85570e857f32c7e662caaf1b2b3ebb5
