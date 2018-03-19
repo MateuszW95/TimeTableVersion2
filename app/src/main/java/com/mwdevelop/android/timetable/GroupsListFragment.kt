@@ -1,5 +1,6 @@
 package com.mwdevelop.android.timetable
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -25,6 +26,7 @@ class GroupsListFragment:Fragment() {
     lateinit var mGropusRecycleView:RecyclerView
     lateinit var mSearchView: SearchView
     private lateinit var GroupNameAdapter:GroupAdapter
+    private lateinit var dateUpdate:String
     companion object {
 
         fun newInstance():Fragment{
@@ -66,13 +68,20 @@ class GroupsListFragment:Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-   private inner  class GroupHolder(inflater: LayoutInflater?,parent:ViewGroup):RecyclerView.ViewHolder(inflater!!.inflate(R.layout.list_item_gruop,parent,false)){
+   private inner  class GroupHolder(inflater: LayoutInflater?,parent:ViewGroup):RecyclerView.ViewHolder(inflater!!.inflate(R.layout.list_item_gruop,parent,false)),View.OnClickListener{
+       override fun onClick(v: View?) {
+           var intent:Intent=DayPagerActivity.getActivity(mGroup.url,context)
+           startActivity(intent)
+       }
 
-        private lateinit var mNameGroupTextView:TextView
+
+
+       private lateinit var mNameGroupTextView:TextView
         private lateinit var mGroup:Group
 
         init {
             mNameGroupTextView=itemView.findViewById(R.id.TV_group_name)
+            itemView.setOnClickListener(this)
         }
 
         fun bind(group:Group)
@@ -162,6 +171,7 @@ class GroupsListFragment:Fragment() {
             val groups = ArrayList<Group>()
             var doc = Jsoup.connect("https://wimii.pcz.pl/pl/plan-zajec").timeout(20000).validateTLSCertificates(false).get()
             val element = doc.select("article[about=/pl/plan-zajec] p").select("a").first()
+            var nazwa=doc.select("article[about=/pl/plan-zajec] p").select("strong").first().text().removePrefix("(").removeSuffix(".)").removeSuffix(")")
             val link = element.attr("abs:href")
             doc = Jsoup.connect(link).timeout(20000).validateTLSCertificates(false).get() as Document
             val elements = doc.select("a")

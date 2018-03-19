@@ -4,20 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/gradient"
+    android:background="@drawable/gradient_1"
     >
+
     <android.support.v7.widget.SearchView
+        android:id="@+id/search_view"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:autofillHints="@string/search"
-        android:id="@+id/search_view"
-        >
-    </android.support.v7.widget.SearchView>
-        <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/list_recycle_view"
-            android:background="@drawable/gradient_1">
-        </android.support.v7.widget.RecyclerView>
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/radius_edittext"
+        ></android.support.v7.widget.SearchView>
+
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/list_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@android:color/transparent">
+
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.mwdevelop.android.timetable
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -38,9 +39,17 @@ class DayPagerActivity : AppCompatActivity() {
     private val DataFileName="DataFile"
     private val EditDialog="Edit_Dialog"
     private var REQUEST_CODE=12
+    private lateinit var URL:String
+
 
     private lateinit var mDayNameTextView:TextView
     companion object {
+        fun getActivity(URL: String,context: Context):Intent{
+            var intent=Intent(context,DayPagerActivity::class.java)
+            intent.putExtra(EXTRA_URL,URL)
+            return intent
+        }
+        private val EXTRA_URL:String="com.mwdevelop.android.timetable.EXTRA_URL"
         var context:Context?=null
     }
 
@@ -48,6 +57,7 @@ class DayPagerActivity : AppCompatActivity() {
     private var mCurrnetDay:Int?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        URL=intent.getStringExtra(EXTRA_URL)
         setContentView(R.layout.activity_day_pager)
         context=this
 
@@ -57,11 +67,9 @@ class DayPagerActivity : AppCompatActivity() {
         mViewPager=findViewById(R.id.day_view_pager)
 
 
-        //Informatyka I-go st sem.4 gr. dziekańska 2 lab.4
-        if(readNameGroup(fileNameGroup) && readDataFile(DataFileName))
-        {
+
             try {
-                if(!object : DataDownloadTask() {}.execute(DataLab.get(applicationContext).mGroupName).get()) throw Exception("CONNECTION ERROR")
+                if(!object : DataDownloadTask() {}.execute(URL).get())
                 LL_data.visibility = View.GONE
                 LL_list.visibility = View.VISIBLE
                 mDays = DataLab.get(this).mDays!!
@@ -72,12 +80,7 @@ class DayPagerActivity : AppCompatActivity() {
                 LL_data.visibility=View.VISIBLE
                 LL_list.visibility=View.GONE
             }
-        }
-        else
-        {
-            LL_data.visibility=View.VISIBLE
-            LL_list.visibility=View.GONE
-        }
+
         bt_enter.setOnClickListener(View.OnClickListener {
             if(!ET_data.text.isEmpty())
             {

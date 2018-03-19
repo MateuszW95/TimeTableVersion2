@@ -39,14 +39,8 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
         super.onPostExecute(s);
     }
 
-    private static void getDataTimeTableFromWebsite(String subjectName) throws Exception{
-        Document doc = Jsoup.connect("https://wimii.pcz.pl/pl/plan-zajec").timeout(40000).validateTLSCertificates(false).get();
-        Element element=doc.select("article[about=/pl/plan-zajec] p").select("a").first();
-        String link=element.attr("abs:href");
-        doc= (Document) Jsoup.connect(link).timeout(40000).validateTLSCertificates(false).get();
-        element=doc.select("a:contains("+subjectName+")").first();
-        link=element.attr("abs:href");
-        System.out.println(link);
+    private static void getDataTimeTableFromWebsite(String URL) throws Exception{
+
 
         DataLab dataLab=DataLab.Companion.get(DayPagerActivity.Companion.getContext());
         ArrayList<String> nameDay =dataLab.getMDaysName();
@@ -65,7 +59,7 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
             dayArrayList.add(tmp_day);
 
         }
-        doc = Jsoup.connect(link).timeout(10000).validateTLSCertificates(false).get();
+        Document doc = Jsoup.connect(URL).timeout(40000).validateTLSCertificates(false).get();
         System.out.println(doc.title());
         doc.select("br").append("#");
         Elements newsHeadlines = doc.select("tr");
@@ -87,9 +81,32 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
                 Subject tmp = new Subject();
                 if (!row.isEmpty()) {
                     String[] splitText = row.split("#");
-                    tmp.setName(splitText[0]);
-                    tmp.setLecturer(splitText[1]);
-                    tmp.setRoom(splitText[2]);
+                        if(splitText.length==3) {
+                            tmp.setName(splitText[0]);
+                            tmp.setLecturer(splitText[1]);
+                            tmp.setRoom(splitText[2]);
+                        }
+                        else if(splitText.length>3)
+                        {
+                            tmp.setName(splitText[0]);
+                            StringBuilder tmpp=new StringBuilder();
+                            for(int k=1;k<splitText.length-1;++k){
+                                tmpp.append(splitText[k]+" ");
+                            }
+                            tmp.setLecturer(tmpp.toString());
+                            if(splitText[splitText.length-1].contains("s."))
+                            tmp.setRoom(splitText[splitText.length-1]);
+                            else {
+                                tmp.setRoom("");
+                                tmp.setLecturer(tmp.getLecturer()+" "+splitText[splitText.length-1]);
+                            }
+                        }
+                        else {
+                            tmp.setName(splitText[0]);
+                            tmp.setLecturer(splitText[splitText.length-1]);
+                        }
+
+
                     tmp.setBeginTime(times.get(i).getBeginTime());
                     tmp.setEndTime(times.get(i).getEndTime());
                 }
@@ -98,6 +115,7 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
             }
 
         }
+
         DataLab.Companion.get(DayPagerActivity.Companion.getContext()).setDayArray(dayArrayList);
 
 

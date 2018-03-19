@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/blue">
+    app:cardBackgroundColor="@color/blue"
+    app:cardCornerRadius="10dp"
+    android:layout_marginBottom="5dp">
 
 
     <TextView
@@ -18,6 +20,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/gradient"
         android:text="TextView"
+        android:textColor="@color/cardview_light_background"
         android:textAlignment="center"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
