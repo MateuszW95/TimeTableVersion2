@@ -3,6 +3,8 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="ligthBlue">#5aa5c2</color>
-    <color name="blue">#c22196f3</color>
+    <color name="lightBlue">#5aa5c2</color>
+    <color name="blue">#c2052a49</color>
+    <color name="orange_light">#ff8f00</color>
+    <color name="Dark_blue_t">#c2052a49</color>
 </resources>

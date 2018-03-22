@@ -14,4 +14,5 @@
     <string name="subject_name">Nazwa</string>
     <string name="s_room">Sala</string>
     <string name="search">Szukaj</string>
+    <string name="load_data">Trwa ładowanie danych</string>
 </resources>

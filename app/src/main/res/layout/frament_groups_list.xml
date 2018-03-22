@@ -1,25 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/gradient_1"
     >
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_view"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:autofillHints="@string/search"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/radius_edittext"
-        ></android.support.v7.widget.SearchView>
+        app:cardBackgroundColor="@color/blue"
+        app:cardCornerRadius="5dp">
 
+        <TextView
+            android:id="@+id/TV_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:shadowRadius="20"
+            android:textStyle=""
+            android:text="@string/Submit"
+            android:textColor="@color/orange_light"
+            android:textSize="25dp" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.SearchView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints="@string/search"
+        android:background="@drawable/radius_edittext"></android.support.v7.widget.SearchView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/LL_NoData"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brak danych"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_refresh"
+            android:text="@string/refresh"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/LL_RV"
+        android:visibility="gone"
+        >
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/list_recycle_view"
         android:layout_width="match_parent"
@@ -31,4 +82,5 @@
         android:background="@android:color/transparent">
 
     </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 </LinearLayout>

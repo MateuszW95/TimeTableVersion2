@@ -34,22 +34,22 @@ import kotlin.collections.ArrayList
 class DayPagerActivity : AppCompatActivity() {
 
     private lateinit var mViewPager: ViewPager
+    private lateinit var mGroupNameTextView: TextView
     private lateinit var mDays: ArrayList<Day>
-    private val fileNameGroup="name"
-    private val DataFileName="DataFile"
-    private val EditDialog="Edit_Dialog"
-    private var REQUEST_CODE=12
+    private var NameGroup:String="name"
     private lateinit var URL:String
 
 
     private lateinit var mDayNameTextView:TextView
     companion object {
-        fun getActivity(URL: String,context: Context):Intent{
+        fun getActivity(URL: String,Name:String,context: Context):Intent{
             var intent=Intent(context,DayPagerActivity::class.java)
             intent.putExtra(EXTRA_URL,URL)
+            intent.putExtra(EXTRA_NAME,Name)
             return intent
         }
         private val EXTRA_URL:String="com.mwdevelop.android.timetable.EXTRA_URL"
+        private val EXTRA_NAME:String="com.mwdevelop.android.timetable.EXTRA_NAME"
         var context:Context?=null
     }
 
@@ -58,6 +58,7 @@ class DayPagerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         URL=intent.getStringExtra(EXTRA_URL)
+        NameGroup=intent.getStringExtra(EXTRA_NAME)
         setContentView(R.layout.activity_day_pager)
         context=this
 
@@ -65,20 +66,21 @@ class DayPagerActivity : AppCompatActivity() {
         var mCalendar:Calendar= Calendar.getInstance()
         mCurrnetDay=mCalendar.get(Calendar.DAY_OF_WEEK)
         mViewPager=findViewById(R.id.day_view_pager)
+        mGroupNameTextView=findViewById(R.id.TV_groupName)
+        mGroupNameTextView.text=NameGroup
 
 
 
             try {
                 if(!object : DataDownloadTask() {}.execute(URL).get())
-                LL_data.visibility = View.GONE
-                LL_list.visibility = View.VISIBLE
                 mDays = DataLab.get(this).mDays!!
+               // LL_wait.visibility = View.GONE
+               // day_view_pager.visibility=View.VISIBLE
             }
             catch (e:Exception)
             {
                 Toast.makeText(applicationContext,"Błąd pobierania danych", Toast.LENGTH_LONG).show()
-                LL_data.visibility=View.VISIBLE
-                LL_list.visibility=View.GONE
+
             }
 
         bt_enter.setOnClickListener(View.OnClickListener {
@@ -87,8 +89,7 @@ class DayPagerActivity : AppCompatActivity() {
                 DataLab.get(this).mGroupName=ET_data.text.toString()
                 try{
                     if(!object : DataDownloadTask() {}.execute(DataLab.get(applicationContext).mGroupName).get()) throw Exception("CONNECTION ERROR")
-                    writeNameGroup("name",this)
-                    writeDataToFile(DataFileName)
+
                     LL_data.visibility=View.GONE
                     LL_list.visibility=View.VISIBLE
                     mDays= DataLab.get(this).mDays!!
@@ -102,21 +103,6 @@ class DayPagerActivity : AppCompatActivity() {
         })
 
         mDays= DataLab.get(this).mDays!!
-
-
-
-        refresh_item.setOnClickListener(View.OnClickListener {
-            try{
-                if(!object : DataDownloadTask() {}.execute(DataLab.get(applicationContext).mGroupName).get()) throw Exception("CONNECTION ERROR")
-                writeDataToFile(DataFileName)
-                mDays= DataLab.get(this).mDays!!
-                mViewPager.adapter.notifyDataSetChanged()
-            }
-            catch(e:Exception)
-            {
-                Toast.makeText(this,"Błąd pobierania danych",Toast.LENGTH_LONG).show()
-            }
-        })
 
 
 
@@ -149,74 +135,7 @@ class DayPagerActivity : AppCompatActivity() {
         }
 
     }
-    fun writeDataToFile(fileName:String){
-       var gson=Gson()
-        var data_str=gson.toJson(DataLab.get(applicationContext).mDays)
-        try {
-            var fileOutputStream: FileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE)
-            fileOutputStream.write(data_str.toByteArray())
-            fileOutputStream.close()
-            Toast.makeText(applicationContext, "File saved", Toast.LENGTH_LONG).show()
-        }
-        catch (e:Exception){
-            e.printStackTrace()
-        }
-    }
 
-    fun readDataFile(fileName:String):Boolean{
-        var message:String?
-        try {
-            var fileInputStream: FileInputStream = openFileInput(fileName)
-            var inputStreamReader = InputStreamReader(fileInputStream)
-            val bufferedReader = BufferedReader(inputStreamReader)
-            var stringBuffer = StringBuffer()
-            message = bufferedReader.readLine()
-            while (message != null) {
-                stringBuffer.append(message)
-                message = bufferedReader.readLine()
-            }
-            var gson=Gson()
-            var type=object: TypeToken<ArrayList<Day>>(){}.type
-            var array:ArrayList<Day> =gson.fromJson(stringBuffer.toString()!!,object: TypeToken<ArrayList<Day>>(){}.type)
-            DataLab.get(applicationContext).mDays=array
-            return true
-        }
-        catch(e:Exception){
-            e.printStackTrace()
-            return false
-        }
-    }
 
-    fun writeNameGroup(fileName: String,context: Context){
-        try {
-            var fileOutputStream: FileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE)
-            fileOutputStream.write(DataLab.get(context!!).mGroupName!!.toByteArray())
-            fileOutputStream.close()
-            Toast.makeText(applicationContext, "File saved", Toast.LENGTH_LONG).show()
-        }
-        catch (e:Exception){
-            e.printStackTrace()
-        }
-    }
 
-    fun readNameGroup(fileName: String):Boolean{
-        var message:String?
-        try {
-            var fileInputStream: FileInputStream = openFileInput(fileName)
-            var inputStreamReader = InputStreamReader(fileInputStream)
-            var bufferedReader = BufferedReader(inputStreamReader)
-            var stringBuffer = StringBuffer()
-            message = bufferedReader.readLine()
-            while (message != null) {
-                stringBuffer.append(message)
-                message = bufferedReader.readLine()
-            }
-            DataLab.get(applicationContext).mGroupName=stringBuffer.toString()
-            return true
-        }
-        catch(e:Exception){
-            return false
-        }
-
-    }
 }

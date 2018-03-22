@@ -69,7 +69,7 @@ class DayFragment:Fragment(){
         return v
     }
 
-    private inner class SubjectHolder(inflater: LayoutInflater?, parent: ViewGroup):RecyclerView.ViewHolder(inflater!!.inflate(R.layout.list_item_subject,parent,false)),View.OnClickListener {
+    private inner class SubjectHolder(inflater: LayoutInflater?, parent: ViewGroup):RecyclerView.ViewHolder(inflater!!.inflate(R.layout.list_item_subject,parent,false)) {
         private lateinit var mNameTextView: TextView
         private lateinit var mLecturerTextView: TextView
         private lateinit var mRoomTextView: TextView
@@ -83,12 +83,9 @@ class DayFragment:Fragment(){
             mRoomTextView=itemView.findViewById(R.id.TV_roomName)
             mBeginTextView=itemView.findViewById(R.id.TV_startTime)
             mEndTextView=itemView.findViewById(R.id.TV_endTime)
-            itemView.setOnClickListener(this)
+
         }
-        override fun onClick(v: View?) {
-            var intent=SubjectActivity.getIntetnt(v!!.context,mDay.id,mSubject.id)
-            startActivity(intent)
-        }
+
 
 
         fun Bind(subject:Subject){

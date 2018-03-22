@@ -12,10 +12,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.LinearLayout
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_day_pager.view.*
+import kotlinx.android.synthetic.main.frament_groups_list.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.IOException
+import android.app.ProgressDialog
+import android.app.Activity
+
+
 
 
 /**
@@ -26,7 +33,10 @@ class GroupsListFragment:Fragment() {
     lateinit var mGropusRecycleView:RecyclerView
     lateinit var mSearchView: SearchView
     private lateinit var GroupNameAdapter:GroupAdapter
-    private lateinit var dateUpdate:String
+    private lateinit var mListLinearLayout: LinearLayout
+    private lateinit var mNoDataLinearLayout: LinearLayout
+    private  var dateUpdate:String=""
+    private lateinit var updateTextView: TextView
     companion object {
 
         fun newInstance():Fragment{
@@ -39,10 +49,23 @@ class GroupsListFragment:Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             var view=inflater!!.inflate(R.layout.frament_groups_list,container,false)
+             mListLinearLayout=view.findViewById(R.id.LL_RV)
+             mNoDataLinearLayout=view.findViewById(R.id.LL_NoData)
+             DownloadGroupsNames().execute()
 
+
+//            if(DownloadGroupsNames().execute().get()){
+//                mListLinearLayout.visibility=View.GONE
+//                mNoDataLinearLayout.visibility=View.VISIBLE
+//            }
+//            else{
+//                mListLinearLayout.visibility=View.VISIBLE
+//                mNoDataLinearLayout.visibility=View.GONE
+//            }
             mGropusRecycleView=view.findViewById(R.id.list_recycle_view)
             mSearchView=view.findViewById(R.id.search_view)
-            mGropusRecycleView.layoutManager=LinearLayoutManager(activity)
+            updateTextView=view.findViewById(R.id.TV_update)
+            mGropusRecycleView.layoutManager=LinearLayoutManager(this!!.activity)
             updateUI()
 
             mSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -64,13 +87,13 @@ class GroupsListFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-       DownloadGroupsNames().execute().get()
+
         super.onCreate(savedInstanceState)
     }
 
    private inner  class GroupHolder(inflater: LayoutInflater?,parent:ViewGroup):RecyclerView.ViewHolder(inflater!!.inflate(R.layout.list_item_gruop,parent,false)),View.OnClickListener{
        override fun onClick(v: View?) {
-           var intent:Intent=DayPagerActivity.getActivity(mGroup.url,context)
+           var intent:Intent=DayPagerActivity.getActivity(mGroup.url,mGroup.name,context)
            startActivity(intent)
        }
 
@@ -100,9 +123,7 @@ class GroupsListFragment:Fragment() {
             }
             return valueFilter as ValueFilter
         }
-        fun aaa(){
 
-        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
            var layoutInflater=LayoutInflater.from(activity)
@@ -159,9 +180,43 @@ class GroupsListFragment:Fragment() {
     }
 
     private inner class DownloadGroupsNames:AsyncTask<Void,Void,Boolean>(){
+        lateinit var progressDialog:ProgressDialog
         override fun doInBackground(vararg params: Void): Boolean {
-            return geGroupstNames()
+            Thread.sleep(3000)
+            return try {
+                geGroupstNames()
+            } catch (e:Exception) {
+                false
+            }
         }
+        override fun onPreExecute() {
+            progressDialog = ProgressDialog(activity)
+            progressDialog.setMessage(getString(R.string.load_data))
+            progressDialog.isIndeterminate = false
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            progressDialog.setCancelable(true)
+            progressDialog.show()
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            progressDialog.dismiss()
+            GroupNameAdapter.notifyDataSetChanged()
+            if(result!!)
+            {
+                mListLinearLayout.visibility=View.VISIBLE
+                mNoDataLinearLayout.visibility=View.GONE
+                updateUI()
+            }
+            else
+            {
+                mListLinearLayout.visibility=View.GONE
+                mNoDataLinearLayout.visibility=View.VISIBLE
+            }
+
+
+        }
+
+
 
     }
 
@@ -185,6 +240,7 @@ class GroupsListFragment:Fragment() {
             }
             groupsList = groups
             fGroupsList=groups
+            dateUpdate=nazwa
             return true
         }
         catch (e:Exception)
@@ -196,5 +252,6 @@ class GroupsListFragment:Fragment() {
     fun updateUI(){
         GroupNameAdapter=GroupAdapter()
         mGropusRecycleView.adapter=GroupNameAdapter
+        updateTextView.text=dateUpdate
     }
 }

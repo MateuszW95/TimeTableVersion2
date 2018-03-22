@@ -47,8 +47,7 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
         ArrayList<TimeClass> times=dataLab.getMTimes();
 
 
-        String a="";
-        if(a.isEmpty()) System.out.printf("sdsd");
+
         ArrayList<Day> dayArrayList = new ArrayList<>();
         ArrayList<String> arrayList = new ArrayList<>();
         ArrayList<String> array = new ArrayList<>();
@@ -59,7 +58,7 @@ public class DataDownloadTask extends AsyncTask<String,Void,Boolean>  {
             dayArrayList.add(tmp_day);
 
         }
-        Document doc = Jsoup.connect(URL).timeout(40000).validateTLSCertificates(false).get();
+        Document doc = Jsoup.connect(URL).timeout(100000).validateTLSCertificates(false).get();
         System.out.println(doc.title());
         doc.select("br").append("#");
         Elements newsHeadlines = doc.select("tr");
